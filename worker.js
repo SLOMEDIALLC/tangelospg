@@ -60,10 +60,13 @@ async function handleRequest(request) {
 
   // 如果路径不是恰好8个字符，返回403
   if (path.length !== 8) {
-    return new Response('Access Denied', {
+    // 调试模式：显示详细错误信息（生产环境可删除此部分）
+    const debugInfo = `Access Denied\n\nDebug Info:\nPath: "${path}"\nLength: ${path.length}\nExpected: 8\n\nTip: URL should be like https://your-domain.com/12345678`;
+    
+    return new Response(debugInfo, {
       status: 403,
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'text/plain; charset=UTF-8'
       }
     })
   }
