@@ -227,7 +227,7 @@ function generateHtmlContent() {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tangelospg - Download</title>
     <style>
         * {
@@ -246,7 +246,14 @@ function generateHtmlContent() {
             flex-direction: column;
             align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        html {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* 老虎机背景动画 */
@@ -589,18 +596,27 @@ function generateHtmlContent() {
             honeyPot.style.pointerEvents = 'none';
             document.body.appendChild(honeyPot);
             
-            // 监测调试工具
+            // 监测调试工具（仅在桌面设备上启用）
             function detectDevTools() {
-                const widthThreshold = window.outerWidth - window.innerWidth > 160;
-                const heightThreshold = window.outerHeight - window.innerHeight > 160;
+                // 检测是否为移动设备
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                // 移动设备跳过检测
+                if (isMobile) return;
+                
+                const widthThreshold = window.outerWidth - window.innerWidth > 200;
+                const heightThreshold = window.outerHeight - window.innerHeight > 200;
                 
                 if (widthThreshold || heightThreshold) {
                     document.body.innerHTML = "<h1>Access Denied</h1>";
                 }
             }
             
-            window.addEventListener('resize', detectDevTools);
-            setInterval(detectDevTools, 1000);
+            // 只在非移动设备上启用检测
+            if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.addEventListener('resize', detectDevTools);
+                setInterval(detectDevTools, 1000);
+            }
         })();
     </script>
 </body>
