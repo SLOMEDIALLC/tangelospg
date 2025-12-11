@@ -264,7 +264,7 @@ function generateHtmlContent() {
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.15;
+            opacity: 0.25;
             pointer-events: none;
             display: flex;
             justify-content: space-around;
@@ -328,9 +328,9 @@ function generateHtmlContent() {
             padding: 20px;
             position: relative;
             z-index: 2;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.15);
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
         }
 
