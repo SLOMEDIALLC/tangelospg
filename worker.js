@@ -24,6 +24,22 @@ async function handleRequest(request) {
     return generateFakePage()
   }
   
+  // 处理图片请求 - 代理GitHub图片
+  if (path === 'x.png') {
+    try {
+      const imageResponse = await fetch('https://raw.githubusercontent.com/SLOMEDIALLC/tangelospg/main/x.png')
+      return new Response(imageResponse.body, {
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=86400',
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
+    } catch (error) {
+      return new Response('Image not found', { status: 404 })
+    }
+  }
+  
   // 如果是根路径访问，返回403
   if (path === '') {
     return new Response('Access Denied', {
@@ -86,7 +102,7 @@ async function handleRequest(request) {
       'X-Frame-Options': 'DENY',
       'Referrer-Policy': 'no-referrer',
       'X-XSS-Protection': '1; mode=block',
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://raw.githubusercontent.com;"
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
     }
   })
 }
@@ -474,7 +490,7 @@ function generateHtmlContent() {
 
     <div class="container">
         <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/SLOMEDIALLC/tangelospg/main/x.png" class="logo" alt="tangelospg logo">
+            <img src="/x.png" class="logo" alt="tangelospg logo" onerror="this.style.display='none'">
         </div>
         <h1>tangelospg</h1>
         <p class="description">Bem-vindo ao tangelospg. Sua plataforma exclusiva de jogos PG. Oferecemos uma ampla seleção de jogos, gráficos de alta qualidade e uma experiência suave para que você possa desfrutar da diversão dos jogos a qualquer hora, em qualquer lugar. Baixe agora e comece sua jornada de jogos!</p>
