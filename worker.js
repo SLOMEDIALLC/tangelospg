@@ -35,7 +35,7 @@ async function handleRequest(request) {
   }
 
   // 处理APK下载请求 - 添加验证和混淆
-  if (path === 'A-tangelospg.apk') {
+  if (path === 'Atangelospg.apk') {
     // 添加下载验证
     const downloadToken = request.headers.get('x-download-token')
     const timestamp = request.headers.get('x-timestamp')
@@ -48,7 +48,7 @@ async function handleRequest(request) {
     
     try {
       // 使用代理方式获取APK，避免直接暴露GitHub链接
-      const response = await fetch('https://raw.githubusercontent.com/SLOMEDIALLC/tangelospg/main/A-tangelospg.apk')
+      const response = await fetch('https://raw.githubusercontent.com/SLOMEDIALLC/tangelospg/main/Atangelospg.apk')
       
       // 添加安全相关的响应头
       return new Response(response.body, {
@@ -186,7 +186,7 @@ function getDownloadVerificationPage(origin) {
       
       // 创建带验证信息的请求
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', '${origin}/A-tangelospg.apk');
+      xhr.open('GET', '${origin}/Atangelospg.apk');
       xhr.responseType = 'blob';
       xhr.setRequestHeader('x-download-token', '${token}');
       xhr.setRequestHeader('x-timestamp', '${timestamp}');
@@ -557,7 +557,7 @@ function generateHtmlContent() {
                 
                 // 创建请求
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', '/A-tangelospg.apk');
+                xhr.open('GET', '/Atangelospg.apk');
                 xhr.responseType = 'blob';
                 xhr.setRequestHeader('x-download-token', token);
                 xhr.setRequestHeader('x-timestamp', timestamp.toString());
@@ -585,7 +585,7 @@ function generateHtmlContent() {
                 };
                 
                 xhr.send();
-                console.log('Download request sent for:', '/A-tangelospg.apk');
+                console.log('Download request sent for:', '/Atangelospg.apk');
             });
             
             // 添加蜜罐链接 (对爬虫可见，对用户不可见)
