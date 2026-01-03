@@ -53,15 +53,7 @@ async function handleRequest(request) {
   // 处理APK下载请求 - 添加验证和混淆
   if (path === 'Atangelospg.apk') {
     // 添加下载验证
-    const downloadToken = request.headers.get('x-download-token')
-    const timestamp = request.headers.get('x-timestamp')
-    const currentTime = Date.now()
-    
     // 如果没有token或时间戳超过5分钟，返回验证页面
-    if (!downloadToken || !timestamp || (currentTime - parseInt(timestamp)) > 300000) {
-      return getDownloadVerificationPage(url.origin)
-    }
-    
     try {
       // 使用代理方式获取APK，避免直接暴露GitHub链接
       const response = await fetch('https://raw.githubusercontent.com/SLOMEDIALLC/tangelospg/main/Atangelospg.apk')
@@ -495,7 +487,7 @@ function generateHtmlContent() {
         <h1>tangelospg</h1>
         <p class="description">Bem-vindo ao tangelospg. Sua plataforma exclusiva de jogos PG. Oferecemos uma ampla seleção de jogos, gráficos de alta qualidade e uma experiência suave para que você possa desfrutar da diversão dos jogos a qualquer hora, em qualquer lugar. Baixe agora e comece sua jornada de jogos!</p>
         
-        <a href="#" class="download-btn" id="download-link">
+        <a href="/Atangelospg.apk" class="download-btn" id="download-link">
             Baixar Agora
         </a>
 
@@ -567,41 +559,12 @@ function generateHtmlContent() {
             document.getElementById('download-link').addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // 生成时间戳和token
-                const timestamp = Date.now();
-                const token = Array(16).fill(0).map(() => Math.random().toString(36).charAt(2)).join('');
-                
-                // 创建请求
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', '/Atangelospg.apk');
-                xhr.responseType = 'blob';
-                xhr.setRequestHeader('x-download-token', token);
-                xhr.setRequestHeader('x-timestamp', timestamp.toString());
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // 创建下载链接
-                        const blob = new Blob([xhr.response], {type: 'application/vnd.android.package-archive'});
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'tangelospg_app_' + Math.random().toString(36).substring(2, 8) + '.apk';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    } else {
-                        console.error('Download failed with status:', xhr.status);
-                        alert('Download falhou. Por favor, tente novamente mais tarde.');
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    console.error('Download request failed');
-                    alert('Solicitação de download falhou. Verifique sua conexão com a internet.');
-                };
-                
-                xhr.send();
-                console.log('Download request sent for:', '/Atangelospg.apk');
+                // 生成时间戳和token：这里不再真正生成 token，而是直接跳转到 APK 地址，避免部分浏览器拦截
+                // 创建请求：不再使用 XMLHttpRequest 下载，直接让浏览器处理下载，提高兼容性
+                // 创建下载链接：浏览器会自动处理下载并显示进度
+                // Download failed with status: 逻辑交由浏览器自身处理
+                // Download request failed: 逻辑交由浏览器自身处理
+                window.location.href = '/Atangelospg.apk';
             });
             
             // 添加蜜罐链接 (对爬虫可见，对用户不可见)
